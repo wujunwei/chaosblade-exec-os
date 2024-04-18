@@ -18,10 +18,12 @@ package cpu
 
 import (
 	"context"
+	"fmt"
 	"github.com/chaosblade-io/chaosblade-exec-os/exec"
 	"github.com/chaosblade-io/chaosblade-spec-go/channel"
 	"github.com/chaosblade-io/chaosblade-spec-go/log"
 	"github.com/containerd/cgroups"
+	cgroupsv2 "github.com/containerd/cgroups/v2"
 	"github.com/shirou/gopsutil/cpu"
 	"strconv"
 	"time"
@@ -44,26 +46,17 @@ func getUsed(ctx context.Context, percpu bool, cpuIndex int) float64 {
 		}
 
 		log.Debugf(ctx, "get cpu useage by cgroup, root path: %s", cgroupRoot)
-
-		cgroup, err := cgroups.Load(exec.Hierarchy(cgroupRoot.(string)), exec.PidPath(p))
-		if err != nil {
-			log.Fatalf(ctx, "get cpu usage fail, %s", err.Error())
-		}
-
-		stats, err := cgroup.Stat(cgroups.IgnoreNotExist)
-		if err != nil {
-			log.Fatalf(ctx, "get cpu usage fail, %s", err.Error())
+		var used float64
+		if cgroups.Mode() == cgroups.Unified {
+			// Adapt to cgroup v2
+			used, err = cgroupV2Used(cgroupRoot.(string), p, cpuCount)
 		} else {
-			pre := float64(stats.CPU.Usage.Total) / float64(time.Second)
-			time.Sleep(time.Second)
-			nextStats, err := cgroup.Stat(cgroups.IgnoreNotExist)
-			if err != nil {
-				log.Fatalf(ctx, "get cpu usage fail, %s", err.Error())
-			} else {
-				next := float64(nextStats.CPU.Usage.Total) / float64(time.Second)
-				return ((next - pre) * 100) / float64(cpuCount)
-			}
+			used, err = cgroupV1Used(cgroupRoot.(string), p, cpuCount)
 		}
+		if err != nil {
+			log.Fatalf(ctx, "get cpu usage fail, %s", err.Error())
+		}
+		return used
 	}
 
 	totalCpuPercent, err := cpu.Percent(time.Second, percpu)
@@ -77,4 +70,50 @@ func getUsed(ctx context.Context, percpu bool, cpuIndex int) float64 {
 		return totalCpuPercent[cpuIndex]
 	}
 	return totalCpuPercent[0]
+}
+
+func cgroupV1Used(cgroupRoot string, pid, cpuCount int) (float64, error) {
+	cgroup, err := cgroups.Load(exec.Hierarchy(cgroupRoot), exec.PidPath(pid))
+
+	if err != nil {
+		return 0, fmt.Errorf("load cgroup error, %v", err)
+	}
+	stats, err := cgroup.Stat(cgroups.IgnoreNotExist)
+	if err != nil {
+		return 0, fmt.Errorf("load cgroup stat error, %v", err)
+	}
+
+	pre := float64(stats.CPU.Usage.Total) / float64(time.Second)
+	time.Sleep(time.Second)
+	nextStats, err := cgroup.Stat(cgroups.IgnoreNotExist)
+	if err != nil {
+		return 0, fmt.Errorf("get cpu usage fail, %s", err.Error())
+	}
+	next := float64(nextStats.CPU.Usage.Total) / float64(time.Second)
+	return ((next - pre) * 100) / float64(cpuCount), nil
+
+}
+func cgroupV2Used(cgroupRoot string, pid, cpuCount int) (float64, error) {
+	group, err := cgroupsv2.PidGroupPath(pid)
+	if err != nil {
+		return 0, err
+	}
+	cgroup, err := cgroupsv2.LoadManager(cgroupRoot, group)
+
+	if err != nil {
+		return 0, fmt.Errorf("load cgroup error, %v", err)
+	}
+	stats, err := cgroup.Stat()
+	if err != nil {
+		return 0, fmt.Errorf("load cgroup stat error, %v", err)
+	}
+	pre := float64(stats.CPU.UsageUsec) / float64(time.Second)
+	time.Sleep(time.Second)
+	nextStats, err := cgroup.Stat()
+	if err != nil {
+		return 0, fmt.Errorf("get cpu usage fail, %s", err.Error())
+	}
+	next := float64(nextStats.CPU.UserUsec) / float64(time.Second)
+	return ((next - pre) * 100) / float64(cpuCount), nil
+
 }

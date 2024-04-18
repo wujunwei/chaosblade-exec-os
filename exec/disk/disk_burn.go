@@ -20,13 +20,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/chaosblade-io/chaosblade-exec-os/exec"
+	"github.com/chaosblade-io/chaosblade-exec-os/exec/util"
 	"github.com/chaosblade-io/chaosblade-spec-go/channel"
 	"github.com/chaosblade-io/chaosblade-spec-go/log"
 	"path"
 	"strings"
 
 	"github.com/chaosblade-io/chaosblade-spec-go/spec"
-	"github.com/chaosblade-io/chaosblade-spec-go/util"
 
 	"github.com/chaosblade-io/chaosblade-exec-os/exec/category"
 )
@@ -134,9 +134,13 @@ func (be *BurnIOExecutor) Exec(uid string, ctx context.Context, model *spec.ExpM
 		}
 		return be.stop(ctx, readExists, writeExists, directory)
 	}
-	if !util.IsDir(directory) {
-		log.Errorf(ctx, "`%s`: path is illegal, is not a directory", directory)
-		return spec.ResponseFailWithFlags(spec.ParameterIllegal, "path", directory, "it must be a directory")
+	if is, err := util.IsDir(directory); err != nil || !is {
+		log.Errorf(ctx, "`%s`: path is illegal, is not a directory or error happen: %s", directory, err)
+		errMsg := "it must be a directory"
+		if err != nil {
+			errMsg = err.Error()
+		}
+		return spec.ResponseFailWithFlags(spec.ParameterIllegal, "path", directory, errMsg)
 	}
 	readExists := model.ActionFlags["read"] == "true"
 	writeExists := model.ActionFlags["write"] == "true"
