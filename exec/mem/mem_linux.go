@@ -81,11 +81,11 @@ func cgroupV1AvailableAndTotal(cgroupRoot, burnMemMode string, pid int, includeB
 		total = int64(stats.Memory.Usage.Limit)
 		available = total - int64(stats.Memory.Usage.Usage)
 		if burnMemMode == "ram" && !includeBufferCache {
-			available = available + int64(stats.Memory.Cache)
+			available += int64(stats.Memory.Cache)
 		}
 		return total, available, nil
 	}
-	return 0, 0, fmt.Errorf("cgroup memory stats is invalid")
+	return 0, 0, fmt.Errorf("cgroup memory stats is invalid,may be it  is not in container")
 }
 func cgroupV2AvailableAndTotal(cgroupRoot, burnMemMode string, pid int, includeBufferCache bool) (int64, int64, error) {
 	var total, available int64
@@ -102,13 +102,14 @@ func cgroupV2AvailableAndTotal(cgroupRoot, burnMemMode string, pid int, includeB
 	if err != nil {
 		return 0, 0, fmt.Errorf("load cgroup stat error, %v", err)
 	}
+	fmt.Println(stats.Memory.UsageLimit)
 	if stats != nil && stats.Memory.UsageLimit < PageCounterMax {
 		total = int64(stats.Memory.UsageLimit)
 		available = total - int64(stats.Memory.Usage)
 		if burnMemMode == "ram" && !includeBufferCache {
-			available = available + int64(stats.Memory.File)
+			available += int64(stats.Memory.File)
 		}
 		return total, available, nil
 	}
-	return 0, 0, fmt.Errorf("cgroup memory stats is invalid")
+	return 0, 0, fmt.Errorf("cgroup memory stats is invalid,may be it  is not in container")
 }

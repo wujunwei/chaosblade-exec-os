@@ -107,13 +107,13 @@ func cgroupV2Used(cgroupRoot string, pid, cpuCount int) (float64, error) {
 	if err != nil {
 		return 0, fmt.Errorf("load cgroup stat error, %v", err)
 	}
-	pre := float64(stats.CPU.UsageUsec) / float64(time.Second)
+	pre := float64(stats.CPU.UsageUsec) / float64(time.Millisecond)
 	time.Sleep(time.Second)
 	nextStats, err := cgroup.Stat()
 	if err != nil {
 		return 0, fmt.Errorf("get cpu usage fail, %s", err.Error())
 	}
-	next := float64(nextStats.CPU.UserUsec) / float64(time.Second)
+	next := float64(nextStats.CPU.UsageUsec) / float64(time.Millisecond)
 	return ((next - pre) * 100) / float64(cpuCount), nil
 
 }

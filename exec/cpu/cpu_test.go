@@ -17,6 +17,7 @@
 package cpu
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/chaosblade-io/chaosblade-spec-go/util"
@@ -45,4 +46,12 @@ func TestParseCpuList(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestCgroupV2(t *testing.T) {
+	used, err := cgroupV2Used("/sys/fs/cgroup/", 2950, 2)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Print(used)
 }
