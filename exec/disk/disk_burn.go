@@ -20,7 +20,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/chaosblade-io/chaosblade-exec-os/exec"
-	"github.com/chaosblade-io/chaosblade-exec-os/exec/util"
 	"github.com/chaosblade-io/chaosblade-spec-go/channel"
 	"github.com/chaosblade-io/chaosblade-spec-go/log"
 	"path"
@@ -134,16 +133,16 @@ func (be *BurnIOExecutor) Exec(uid string, ctx context.Context, model *spec.ExpM
 		}
 		return be.stop(ctx, readExists, writeExists, directory)
 	}
-	if is, err := util.IsDir(directory); err != nil || !is {
-		if err != nil {
-			err = fmt.Errorf("`%s`: path is illegal, is not a directory or error happen: %s", directory, err)
-		}
-		errMsg := "it must be a directory"
-		if err != nil {
-			errMsg = err.Error()
-		}
-		return spec.ResponseFailWithFlags(spec.ParameterIllegal, "path", directory, errMsg)
-	}
+	//if is, err := util.IsDir(directory); err != nil || !is {
+	//	if err != nil {
+	//		err = fmt.Errorf("`%s`: path is illegal, is not a directory or error happen: %s", directory, err)
+	//	}
+	//	errMsg := "it must be a directory"
+	//	if err != nil {
+	//		errMsg = err.Error()
+	//	}
+	//	return spec.ResponseFailWithFlags(spec.ParameterIllegal, "path", directory, errMsg)
+	//}
 	readExists := model.ActionFlags["read"] == "true"
 	writeExists := model.ActionFlags["write"] == "true"
 	if !readExists && !writeExists {
