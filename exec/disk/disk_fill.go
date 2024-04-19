@@ -118,7 +118,9 @@ func (fae *FillActionExecutor) Exec(uid string, ctx context.Context, model *spec
 		directory = path
 	}
 	if is, err := util.IsDir(directory); err != nil || !is {
-		log.Errorf(ctx, "`%s`: path is illegal, is not a directory or error happen: %s", directory, err)
+		if err != nil {
+			err = fmt.Errorf("`%s`: path is illegal, is not a directory or error happen: %s", directory, err)
+		}
 		errMsg := "it must be a directory"
 		if err != nil {
 			errMsg = err.Error()
