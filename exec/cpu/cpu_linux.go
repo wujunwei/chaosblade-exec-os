@@ -47,6 +47,7 @@ func getUsed(ctx context.Context, percpu bool, cpuIndex int) float64 {
 
 		log.Debugf(ctx, "get cpu useage by cgroup, root path: %s", cgroupRoot)
 		var used float64
+
 		if cgroups.Mode() == cgroups.Unified {
 			// Adapt to cgroup v2
 			used, err = cgroupV2Used(cgroupRoot.(string), p, cpuCount)
@@ -76,18 +77,18 @@ func cgroupV1Used(cgroupRoot string, pid, cpuCount int) (float64, error) {
 	cgroup, err := cgroups.Load(exec.Hierarchy(cgroupRoot), exec.PidPath(pid))
 
 	if err != nil {
-		return 0, fmt.Errorf("load cgroup error, %v", err)
+		return 0, fmt.Errorf("load cgroup v1 error, %v", err)
 	}
 	stats, err := cgroup.Stat(cgroups.IgnoreNotExist)
 	if err != nil {
-		return 0, fmt.Errorf("load cgroup stat error, %v", err)
+		return 0, fmt.Errorf("load cgroup v1 stat error, %v", err)
 	}
 
 	pre := float64(stats.CPU.Usage.Total) / float64(time.Second)
 	time.Sleep(time.Second)
 	nextStats, err := cgroup.Stat(cgroups.IgnoreNotExist)
 	if err != nil {
-		return 0, fmt.Errorf("get cpu usage fail, %s", err.Error())
+		return 0, fmt.Errorf("cgroup v1 get cpu usage fail, %s", err.Error())
 	}
 	next := float64(nextStats.CPU.Usage.Total) / float64(time.Second)
 	return ((next - pre) * 100) / float64(cpuCount), nil
@@ -101,17 +102,17 @@ func cgroupV2Used(cgroupRoot string, pid, cpuCount int) (float64, error) {
 	cgroup, err := cgroupsv2.LoadManager(cgroupRoot, group)
 
 	if err != nil {
-		return 0, fmt.Errorf("load cgroup error, %v", err)
+		return 0, fmt.Errorf("load cgroup v2 error, %v", err)
 	}
 	stats, err := cgroup.Stat()
 	if err != nil {
-		return 0, fmt.Errorf("load cgroup stat error, %v", err)
+		return 0, fmt.Errorf("load cgroup v2 stat error, %v", err)
 	}
 	pre := float64(stats.CPU.UsageUsec) / float64(time.Millisecond)
 	time.Sleep(time.Second)
 	nextStats, err := cgroup.Stat()
 	if err != nil {
-		return 0, fmt.Errorf("get cpu usage fail, %s", err.Error())
+		return 0, fmt.Errorf("cgroup v2 get cpu usage fail, %s", err.Error())
 	}
 	next := float64(nextStats.CPU.UsageUsec) / float64(time.Millisecond)
 	return ((next - pre) * 100) / float64(cpuCount), nil
