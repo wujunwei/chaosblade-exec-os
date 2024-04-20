@@ -45,7 +45,6 @@ tags
 /chaosblade.dat
 target
 coverage.txt
-vendor
 
 # Website
 site-build

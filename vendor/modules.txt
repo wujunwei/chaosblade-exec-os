@@ -1,0 +1,102 @@
+# github.com/StackExchange/wmi v1.2.1
+## explicit; go 1.13
+github.com/StackExchange/wmi
+# github.com/chaosblade-io/chaosblade-spec-go v1.7.3
+## explicit; go 1.20
+github.com/chaosblade-io/chaosblade-spec-go/channel
+github.com/chaosblade-io/chaosblade-spec-go/log
+github.com/chaosblade-io/chaosblade-spec-go/spec
+github.com/chaosblade-io/chaosblade-spec-go/util
+# github.com/cilium/ebpf v0.4.0
+## explicit; go 1.15
+github.com/cilium/ebpf
+github.com/cilium/ebpf/asm
+github.com/cilium/ebpf/internal
+github.com/cilium/ebpf/internal/btf
+github.com/cilium/ebpf/internal/unix
+github.com/cilium/ebpf/link
+# github.com/containerd/cgroups v1.0.2-0.20210605143700-23b51209bf7b
+## explicit; go 1.13
+github.com/containerd/cgroups
+github.com/containerd/cgroups/stats/v1
+github.com/containerd/cgroups/v2
+github.com/containerd/cgroups/v2/stats
+# github.com/coreos/go-systemd/v22 v22.1.0
+## explicit; go 1.12
+github.com/coreos/go-systemd/v22/dbus
+# github.com/docker/go-units v0.4.0
+## explicit
+github.com/docker/go-units
+# github.com/go-ole/go-ole v1.2.5
+## explicit; go 1.12
+github.com/go-ole/go-ole
+github.com/go-ole/go-ole/oleutil
+# github.com/godbus/dbus/v5 v5.0.3
+## explicit; go 1.12
+github.com/godbus/dbus/v5
+# github.com/gogo/protobuf v1.3.2
+## explicit; go 1.15
+github.com/gogo/protobuf/gogoproto
+github.com/gogo/protobuf/proto
+github.com/gogo/protobuf/protoc-gen-gogo/descriptor
+# github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
+## explicit
+github.com/howeyc/gopass
+# github.com/kr/pretty v0.3.0
+## explicit; go 1.12
+# github.com/opencontainers/runtime-spec v1.0.2
+## explicit
+github.com/opencontainers/runtime-spec/specs-go
+# github.com/pkg/errors v0.9.1
+## explicit
+github.com/pkg/errors
+# github.com/shirou/gopsutil v3.21.6+incompatible
+## explicit
+github.com/shirou/gopsutil/cpu
+github.com/shirou/gopsutil/internal/common
+github.com/shirou/gopsutil/mem
+github.com/shirou/gopsutil/net
+github.com/shirou/gopsutil/process
+# github.com/sirupsen/logrus v1.7.0
+## explicit; go 1.13
+github.com/sirupsen/logrus
+# github.com/tklauser/go-sysconf v0.3.7
+## explicit; go 1.13
+github.com/tklauser/go-sysconf
+# github.com/tklauser/numcpus v0.2.3
+## explicit; go 1.11
+github.com/tklauser/numcpus
+# go.uber.org/automaxprocs v1.3.0
+## explicit; go 1.13
+go.uber.org/automaxprocs/internal/cgroups
+go.uber.org/automaxprocs/internal/runtime
+go.uber.org/automaxprocs/maxprocs
+# golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
+## explicit; go 1.17
+golang.org/x/crypto/blowfish
+golang.org/x/crypto/chacha20
+golang.org/x/crypto/curve25519
+golang.org/x/crypto/curve25519/internal/field
+golang.org/x/crypto/ed25519
+golang.org/x/crypto/ed25519/internal/edwards25519
+golang.org/x/crypto/internal/subtle
+golang.org/x/crypto/poly1305
+golang.org/x/crypto/ssh
+golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
+golang.org/x/crypto/ssh/terminal
+# golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c
+## explicit; go 1.17
+golang.org/x/sys/cpu
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/plan9
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1
+## explicit; go 1.11
+golang.org/x/term
+# gopkg.in/natefinch/lumberjack.v2 v2.0.0
+## explicit
+gopkg.in/natefinch/lumberjack.v2
+# gopkg.in/yaml.v2 v2.4.0
+## explicit; go 1.15
+gopkg.in/yaml.v2
