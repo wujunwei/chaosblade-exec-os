@@ -15,5 +15,5 @@ import (
 )
 
 func TestDisk(t *testing.T) {
-	fmt.Println(util.IsDir("/Users/10000134/code/chaosblade-exec-os/README_CN.md"))
+	fmt.Println(util.IsDir("/Users/10000134/code/chaosblade-exec-os/"))
 }
