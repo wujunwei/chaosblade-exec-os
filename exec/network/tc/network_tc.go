@@ -91,7 +91,7 @@ func startNet(ctx context.Context, netInterface, classRule, localPort, remotePor
 			return spec.ResponseFailWithFlags(spec.ParameterIllegal, "remote-port", remotePort, err)
 		}
 	}
-	if excludePort != "" { 
+	if excludePort != "" {
 		excludePortRanges, err = getExcludePortRanges(ctx, excludePort, ignorePeerPorts, cl)
 		if err != nil {
 			return spec.ResponseFailWithFlags(spec.ParameterIllegal, "exclude-port", excludePort, err)
@@ -379,7 +379,11 @@ func stopNet(ctx context.Context, netInterface string, cl spec.Channel) *spec.Re
 			log.Errorf(ctx, "tc del filter err, %s", response.Err)
 		}
 	}
-	return cl.Run(ctx, "tc", fmt.Sprintf(`qdisc del dev %s root`, netInterface))
+	resp := cl.Run(ctx, "tc", fmt.Sprintf(`qdisc del dev %s root`, netInterface))
+	if strings.Contains(resp.Err, "RTNETLINK answers: No such file or directory") {
+		return spec.ReturnSuccess("success")
+	}
+	return resp
 }
 
 // getPeerPorts returns all ports communicating with the port
